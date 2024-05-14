@@ -1,43 +1,50 @@
 /*
- * Copyright (c) 2016 Intel Corporation
+ * Copyright (c) 2024 Nordic Semiconductor ASA
  *
- * SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+#include <stdio.h>
 #include <zephyr/kernel.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/spi.h>
+#include <zephyr/logging/log.h>
 
-/* 1000 msec = 1 sec */
-#define SLEEP_TIME_MS   1000
 
-/* The devicetree node identifier for the "led0" alias. */
-#define LED0_NODE DT_ALIAS(led0)
+LOG_MODULE_REGISTER(Lesson7_Exercise1, LOG_LEVEL_INF);
 
-/*
- * A build error on this line means your board is unsupported.
- * See the sample documentation for information on how to fix this.
- */
-static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
+#define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB
+
+const struct gpio_dt_spec ledspec = GPIO_DT_SPEC_GET(DT_NODELABEL(led0), gpios);
+const struct device *spi_dev = DEVICE_DT_GET(DT_NODELABEL(max30003));
 
 int main(void)
 {
-	int ret;
+	int err;
 
-	if (!gpio_is_ready_dt(&led)) {
+	LOG_INF("Lesson 7 - Exercise 1 started");
+
+	err = gpio_is_ready_dt(&ledspec);
+	if (!err) {
+		LOG_INF("Error: GPIO device is not ready, err: %d", err);
 		return 0;
 	}
 
-	ret = gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE);
-	if (ret < 0) {
+	err = device_is_ready(spi_dev);
+	if (!err) {
+		LOG_INF("Error: SPI device is not ready, err: %d", err);
 		return 0;
 	}
 
-	while (1) {
-		ret = gpio_pin_toggle_dt(&led);
-		if (ret < 0) {
-			return 0;
-		}
-		k_msleep(SLEEP_TIME_MS);
+	gpio_pin_configure_dt(&ledspec, GPIO_OUTPUT_ACTIVE);
+	
+
+	while(1){
+		gpio_pin_toggle_dt(&ledspec);
+		k_msleep(3000);
 	}
+	
 	return 0;
 }
