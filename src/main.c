@@ -11,9 +11,10 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/drivers/spi.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/sys/util.h>
 
 
-LOG_MODULE_REGISTER(Lesson7_Exercise1, LOG_LEVEL_INF);
+LOG_MODULE_REGISTER(MAXBLE, LOG_LEVEL_INF);
 
 #define SPIOP	SPI_WORD_SET(8) | SPI_TRANSFER_MSB
 
@@ -39,11 +40,14 @@ int main(void)
 	}
 
 	gpio_pin_configure_dt(&ledspec, GPIO_OUTPUT_ACTIVE);
-	
+
+
 
 	while(1){
 		gpio_pin_toggle_dt(&ledspec);
 		k_msleep(3000);
+		// LOG_INF("Hi custom board!\n");
+
 	}
 	
 	return 0;
