@@ -6,3 +6,9 @@ description: BME280 integrated environmental sensor
 compatible: "dsy,max30003"
 
 include: spi-device.yaml
+
+properties:
+  int-gpios:
+    type: phandle-array
+    required: false
+    description: INT interrupt pin

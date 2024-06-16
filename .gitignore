@@ -1,6 +1,8 @@
 # editors
 *.swp
 *~
-
+*.txt
+*.csv
+*.log
 # build
 /build*/

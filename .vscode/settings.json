@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "dk_buttons_and_leds.h": "c",
+        "max30003.h": "c",
+        "gpio.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
+    }
+}
